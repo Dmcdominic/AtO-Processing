@@ -1,6 +1,6 @@
 # AtO Processing
 
-Data scraping and processing for documentation of [Across the Obelisk](https://store.steampowered.com/app/1385380/Across_the_Obelisk/)
+Data scraping and processing for documentation of [Across the Obelisk](https://store.steampowered.com/app/1385380/Across_the_Obelisk/) on the [Across the Obelisk Wiki](https://ato.fandom.com/wiki/Across_the_Obelisk_Wiki).
 
 
 ### Created By

@@ -5,11 +5,10 @@ import re
 
 # =============== CONSTANTS ================
 ASSETS_RIPPED_PATH = "/mnt/e/Coding/Decompilation/AtO Decompiled"
-OUTPUT_PATH = "/mnt/e/Coding/Decompilation/AtO Processing Output"
-
-JSON_OUTPUT_PATH = OUTPUT_PATH + "/enums.json"
-
 ENUMS_PATH = ASSETS_RIPPED_PATH + "/Enums.cs"
+
+JSON_OUTPUT_PATH = "/mnt/e/Coding/Decompilation/AtO Processing Output/enums.json"
+PYTHON_OUTPUT_PATH = "/mnt/e/Coding/Decompilation/AtO-Processing/CSharpToPythonConversions/Enums.py"
 
 ENUM_PREFIX = "public enum "
 ENUM_PREFIX_LEN = len(ENUM_PREFIX)
@@ -28,7 +27,7 @@ print ("Reading the enums file from " + ENUMS_PATH)
 enumsFile = open(ENUMS_PATH, "r")
 enumsFileTxt = enumsFile.read()
 enumsFile.close()
-print ("  Done reading")
+print ("\tDone reading\n")
 
 
 # =============== PROCESSING ENUMS INTO JSON ================
@@ -61,7 +60,7 @@ for i in enumPrefixIndices:
     # Save to the enums dictionary
     enums[title] = values
 
-print ("  Done iterating. Processed " + str(len(enums)) + " enums")
+print ("\tDone iterating. Processed " + str(len(enums)) + " enums\n")
 
 
 # =============== HUMANIZE ENUM VALUES ================
@@ -75,4 +74,28 @@ print ("Writing to " + JSON_OUTPUT_PATH)
 file = open(JSON_OUTPUT_PATH, "w")
 file.write(enumsJsonString)
 file.close()
-print ("  Done writing")
+print ("\tDone writing\n")
+
+
+# =============== CONVERT TO PYTHON & EXPORT ================
+print ("Converting to Python")
+pyStr = "class Enums(object):\n"
+for enumKey in enums:
+    i = 0
+    pyStr += "\tclass " + enumKey + ":\n"
+    for val in enums[enumKey]:
+        if val == "None":
+            val = "_None"
+        pyStr += "\t\t" + val
+        if "=" not in val:
+            pyStr += " = " + str(i)
+            i += 1
+        pyStr += "\n"
+
+print ("\tDone converting to Python\n")
+
+print ("Writing to " + PYTHON_OUTPUT_PATH)
+file = open(PYTHON_OUTPUT_PATH, "w")
+file.write(pyStr)
+file.close()
+print ("\tDone writing\n")

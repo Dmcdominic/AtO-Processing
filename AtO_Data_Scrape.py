@@ -11,7 +11,8 @@ from collections import OrderedDict
 PROJECT_PATH = "/mnt/e/Coding/Decompilation/AtO Assets Ripped/AcrossTheObelisk/ExportedProject"
 OUTPUT_PATH = "/mnt/e/Coding/Decompilation/AtO Processing Output"
 
-CARD_DATA_OUTPUT_PATH = OUTPUT_PATH + "/cardData.txt"
+CARD_DATA_JSON_OUTPUT_PATH = OUTPUT_PATH + "/cardData.json"
+CARD_DATA_STR_OUTPUT_PATH = OUTPUT_PATH + "/cardData.txt"
 
 RESOURCES_PATH = PROJECT_PATH + "/Assets/Resources"
 CARDS_PATH = RESOURCES_PATH + "/cards"
@@ -248,7 +249,7 @@ for file_path in card_asset_files:
         cardsCollapsed[newCardId] = newCard
     file.close()
 
-print
+print ("\n")
 
 
 # ---------- Export Mid-Processed JSON ----------
@@ -262,6 +263,11 @@ def getTraits(card):
         if (card[trait] > 0):
             traits.append(TRAITS[trait])
     return traits
+
+def getDescriptionPlainTxt(card):
+    description = card["description"]
+    #TODO
+    return description
 
 for baseCardId in cardsCollapsed:
     card = cardsCollapsed[baseCardId]
@@ -290,10 +296,10 @@ for baseCardId in cardsCollapsed:
         ("TargetB" , TARGET_STRINGS[cardA["targetType"]][cardA["targetSide"]][cardA["targetPosition"]]),
         ("TargetY" , TARGET_STRINGS[cardB["targetType"]][cardB["targetSide"]][cardB["targetPosition"]]),
         ("TargetP" , TARGET_STRINGS[cardR["targetType"]][cardR["targetSide"]][cardR["targetPosition"]]),
-        ("Text"    , card["description"]),
-        ("TextB"   , cardA["description"]),
-        ("TextY"   , cardB["description"]),
-        ("TextP"   , cardR["description"]),
+        ("Text"    , getDescriptionPlainTxt(card)),
+        ("TextB"   , getDescriptionPlainTxt(cardA)),
+        ("TextY"   , getDescriptionPlainTxt(cardB)),
+        ("TextP"   , getDescriptionPlainTxt(cardR)),
         ("Traits"  , getTraits(card)),
         ("TraitsB" , getTraits(cardA)),
         ("TraitsY" , getTraits(cardB)),
@@ -335,11 +341,14 @@ for cardId in cardsKeyedForFandom:
 # =============== FINAL CLEANUP & EXPORT ================
 cardDataStr += "\t}\n}\nreturn data"
 
-#print ("\nFinal output:")
-#print (cardDataStr)
+print ("Writing json dump of  to " + CARD_DATA_JSON_OUTPUT_PATH)
+file = open(CARD_DATA_JSON_OUTPUT_PATH, "w")
+file.write(json.dumps(cardsKeyedForFandom))
+file.close()
+print ("\tDone writing\n")
 
-print ("Writing to " + CARD_DATA_OUTPUT_PATH)
-file = open(CARD_DATA_OUTPUT_PATH, "w")
+print ("Writing cardDataStr to " + CARD_DATA_STR_OUTPUT_PATH)
+file = open(CARD_DATA_STR_OUTPUT_PATH, "w")
 file.write(cardDataStr)
 file.close()
-print ("  Done writing")
+print ("\tDone writing\n")
